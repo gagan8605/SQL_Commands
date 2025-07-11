@@ -1,18 +1,38 @@
 
-# 📘 SQL Practice Commands – Basic to Intermediate
+# 📘 Structured Query Language (SQL) – Full Reference with Syntax
 
-This repository contains general SQL commands categorized into **DDL**, **DML**, **DQL**, **DCL**, and **TCL** for hands-on practice and learning.
+This guide covers the essential SQL commands used in database development and management. SQL commands are broadly categorized into:
+
+* 🧱 DDL – Data Definition Language
+* ✍️ DML – Data Manipulation Language
+* 🔍 DQL – Data Query Language
+* 🔐 DCL – Data Control Language
+* 🔁 TCL – Transaction Control Language
 
 ---
 
-## 🗂️ Database & Table Creation (DDL)
+## 🧱 1. DDL (Data Definition Language)
+
+DDL commands are used to define or modify the structure of database objects such as tables, schemas, indexes, etc.
+
+| Command    | Description                                               |
+| ---------- | --------------------------------------------------------- |
+| `CREATE`   | Creates a new database/table/view/etc.                    |
+| `ALTER`    | Modifies an existing object structure                     |
+| `DROP`     | Deletes an object permanently                             |
+| `TRUNCATE` | Removes all records from a table, but keeps the structure |
+| `RENAME`   | Renames a table or column (in some databases)             |
+
+### 🔹 Syntax & Examples
 
 ```sql
--- Create and use a database
-CREATE DATABASE ddl;
-USE ddl;
+-- Create a new database
+CREATE DATABASE db_name;
 
--- Create a table
+-- Use a database
+USE db_name;
+
+-- Create a new table
 CREATE TABLE student (
   name VARCHAR(100),
   roll_no INT,
@@ -20,162 +40,166 @@ CREATE TABLE student (
   email VARCHAR(100)
 );
 
--- View table structure
-DESC student;
+-- Alter table: Add column
+ALTER TABLE student ADD marks INT;
 
--- View all records
-SELECT * FROM student;
+-- Alter table: Modify column
+ALTER TABLE student MODIFY COLUMN marks FLOAT;
+
+-- Alter table: Rename table
+ALTER TABLE student RENAME TO student_info;
+
+-- Alter table: Rename column (MySQL 8+)
+ALTER TABLE student_info RENAME COLUMN name TO stud_name;
+
+-- Drop table permanently
+DROP TABLE student_info;
+
+-- Truncate table: delete all rows but keep structure
+TRUNCATE TABLE student_info;
 ```
 
 ---
 
-## 📥 Insert Data (DML)
+## ✍️ 2. DML (Data Manipulation Language)
+
+DML commands are used to manage data within schema objects.
+
+| Command  | Description               |
+| -------- | ------------------------- |
+| `INSERT` | Adds new records          |
+| `UPDATE` | Modifies existing records |
+| `DELETE` | Removes records           |
+
+### 🔹 Syntax & Examples
 
 ```sql
 -- Insert single row
-INSERT INTO student VALUES ("Gagan", 12, "Pune", "gagan@gmail.com");
+INSERT INTO student (name, roll_no, address, email)
+VALUES ("Gagan", 12, "Pune", "gagan@gmail.com");
 
 -- Insert multiple rows
 INSERT INTO student (name, roll_no, address, email)
 VALUES 
   ("Ram", 13, "Mumbai", "ram@gmail.com"),
   ("Laxman", 14, "Thane", "laxman@gmail.com");
-```
 
----
+-- Update specific row
+UPDATE student SET roll_no = 16 WHERE name = "Ram";
 
-## 📊 SELECT, GROUP BY, ORDER BY (DQL)
+-- Update multiple fields
+UPDATE student SET email = "lucky@gmail.com", marks = 100 WHERE roll_no = 14;
 
-```sql
--- Group and order
-SELECT name, roll_no, COUNT(*)
-FROM student
-WHERE roll_no >= 13
-GROUP BY name, roll_no
-ORDER BY name ASC;
-```
-
----
-
-## ❌ DELETE Data (DML)
-
-```sql
--- Delete specific student
+-- Delete specific record
 DELETE FROM student WHERE roll_no = 15;
 ```
 
 ---
 
-## 🛠️ ALTER, DROP, TRUNCATE (DDL - DRCAT)
+## 🔍 3. DQL (Data Query Language)
+
+DQL is used to retrieve data from the database using the `SELECT` statement.
+
+| Command  | Description                                |
+| -------- | ------------------------------------------ |
+| `SELECT` | Retrieves data based on specified criteria |
+
+### 🔹 Syntax & Examples
 
 ```sql
--- Create table to demo DROP
-CREATE TABLE Teachers (
-  teacher_name VARCHAR(100),
-  Dept VARCHAR(100),
-  address VARCHAR(100)
-);
+-- Select all data
+SELECT * FROM student;
 
--- Rename table
-ALTER TABLE student RENAME TO student_info;
+-- Select specific columns
+SELECT name, email FROM student;
 
--- Rename column
-ALTER TABLE student_info RENAME COLUMN name TO stud_name;
+-- Conditional retrieval
+SELECT * FROM student WHERE roll_no >= 13;
 
--- Add new column
-ALTER TABLE student_info ADD marks FLOAT;
+-- Grouping and aggregation
+SELECT name, COUNT(*) FROM student
+GROUP BY name;
 
--- Modify column data type
-ALTER TABLE student_info MODIFY COLUMN marks INT;
+-- Ordering
+SELECT * FROM student ORDER BY roll_no DESC;
 
--- Drop table
-DROP TABLE Teachers;
-
--- Truncate table (removes all rows)
-TRUNCATE TABLE student_info;
-
--- Check structure and data
-DESC student_info;
-SELECT * FROM student_info;
+-- Aggregate functions
+SELECT COUNT(*), AVG(marks) FROM student;
 ```
 
 ---
 
-## 📝 More INSERT/UPDATE/DELETE (DML - SUDI)
+## 🔐 4. DCL (Data Control Language)
+
+DCL commands manage permissions and access control.
+
+| Command  | Description                    |
+| -------- | ------------------------------ |
+| `GRANT`  | Gives user access privileges   |
+| `REVOKE` | Removes user access privileges |
+
+### 🔹 Syntax & Examples
 
 ```sql
--- Insert with all columns
-INSERT INTO student_info (stud_name, roll_no, address, email, marks)
-VALUES 
-  ("Ram", 13, "Mumbai", "ram@gmail.com", 86),
-  ("Laxman", 14, "Thane", "laxman@gmail.com", 96);
+-- Grant access (depends on DBMS configuration)
+GRANT SELECT, INSERT ON student TO 'user_name';
 
--- Update specific fields
-UPDATE student_info SET marks = 99 WHERE roll_no = 13;
-
--- Update multiple fields
-UPDATE student_info SET marks = 100, email = "lucky@gmail.com" WHERE roll_no = 14;
-
--- Insert another row
-INSERT INTO student_info VALUES ("Hanuman Dada", 5, "India", "sri@gmail.com", 89);
-
--- Delete specific record
-DELETE FROM student_info WHERE roll_no = 14 AND stud_name = "Laxman";
+-- Revoke access
+REVOKE INSERT ON student FROM 'user_name';
 ```
+
+⚠️ Note: You must have admin privileges to use GRANT/REVOKE commands. Some setups (like XAMPP/MAMP) might restrict this.
 
 ---
 
-## 🔍 Data Query Language (DQL)
+## 🔁 5. TCL (Transaction Control Language)
 
-```sql
--- Count total rows
-SELECT COUNT(*) FROM student_info;
+TCL commands manage transactions in the database to ensure data integrity.
 
--- Count and average grouped by marks
-SELECT COUNT(*), AVG(marks) AS avg_marks
-FROM student_info
-GROUP BY marks;
-```
+| Command                       | Description                                       |
+| ----------------------------- | ------------------------------------------------- |
+| `COMMIT`                      | Saves all changes made in the current transaction |
+| `ROLLBACK`                    | Reverts changes made in the current transaction   |
+| `SAVEPOINT`                   | Sets a point to which you can roll back later     |
+| `BEGIN` / `START TRANSACTION` | Marks the start of a transaction                  |
 
----
-
-## 🔐 Data Control Language (DCL)
-
-```sql
--- Grant permissions (example, may not work in all environments)
--- GRANT SELECT, UPDATE ON student_info TO 'root';
-
--- Note: May throw error like:
--- Error Code: 1410. You are not allowed to create a user with GRANT
-```
-
----
-
-## 🔁 Transaction Control Language (TCL)
+### 🔹 Syntax & Examples
 
 ```sql
 -- Begin transaction
-BEGIN;
+START TRANSACTION;
 
--- Update within transaction
-UPDATE student_info SET marks = 86 WHERE stud_name = "Ram";
+-- Update inside transaction
+UPDATE student SET marks = 90 WHERE roll_no = 12;
 
--- Create a savepoint
+-- Set a savepoint
 SAVEPOINT before_update;
 
 -- Rollback to savepoint
 ROLLBACK TO before_update;
 
--- Commit changes
+-- Finalize transaction
 COMMIT;
 ```
 
 ---
 
-## 📌 Notes
+## 🧾 Summary Table
 
-* `DDL` → Data Definition Language (CREATE, ALTER, DROP, TRUNCATE)
-* `DML` → Data Manipulation Language (INSERT, UPDATE, DELETE)
-* `DQL` → Data Query Language (SELECT)
-* `DCL` → Data Control Language (GRANT, REVOKE)
-* `TCL` → Transaction Control Language (COMMIT, ROLLBACK, SAVEPOINT)
+| Category | Commands                              |
+| -------- | ------------------------------------- |
+| **DDL**  | CREATE, ALTER, DROP, TRUNCATE, RENAME |
+| **DML**  | INSERT, UPDATE, DELETE                |
+| **DQL**  | SELECT                                |
+| **DCL**  | GRANT, REVOKE                         |
+| **TCL**  | COMMIT, ROLLBACK, SAVEPOINT, BEGIN    |
+
+---
+
+## 🧠 Tips
+
+* Always use `WHERE` clause with `UPDATE` and `DELETE` to avoid affecting all records.
+* Use `DESC table_name;` to check schema.
+* Use `LIMIT` clause for faster test queries.
+* Use aliases (`AS`) to make result sets more readable.
+* Wrap important operations inside transactions when dealing with financial or sensitive data.
